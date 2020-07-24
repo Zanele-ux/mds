@@ -13,7 +13,7 @@
                          <li> {{ $holiday->name }} {{  $holiday->day}}</li>
                          @endforeach
                         </ul>
-                        <button type="submit" class="btn btn-primary">Download</button>
+                        <td><a href="{{action('HolidayController@download', $year)}}">Download PDF</a>
                     </div>
                 </div>
             </form>

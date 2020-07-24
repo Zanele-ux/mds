@@ -22,3 +22,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/holidays', 'HolidayController@store')->name('holidays');
 Route::get('/holidays', 'HolidayController@index')->name('holidays.index');
+Route::get('/holidays/{year}', 'HolidayController@download')->name('holidays.download');
+//.Route::get('htmltopdfview',array('as'=>'holidays','uses'=>'HolidayController@htmltopdfview'));
+
