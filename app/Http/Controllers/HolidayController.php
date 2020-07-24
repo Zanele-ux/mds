@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Holiday;
+use FontLib\Table\Type\name;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class HolidayController extends Controller
@@ -14,7 +16,7 @@ class HolidayController extends Controller
      */
     public function index()
     {
-        //
+       return view('/home');
     }
 
     /**
@@ -35,7 +37,43 @@ class HolidayController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $input = $request->all();
+
+        $client = new Client();
+        //  https://kayaposoft.com/enrico/json/v2.0/?action=getHolidaysForYear&year=2022&country=zaf&holidayType=public_holiday
+        $given_year =  $input['year'];
+
+        $holidays = Holiday::where('day' , '>=' , $given_year.'/01/01')
+            ->where('day', '<=' , $given_year. '/12/31')
+            ->get();
+//dd($holidays);
+
+        if($holidays->count() == 0) {
+
+
+            $res = $client->request('GET', 'https://kayaposoft.com/enrico/json/v2.0/?action=getHolidaysForYear&year='.$given_year.'&country=zaf&holidayType=public_holiday');
+            $statusCode = $res->getStatusCode();
+
+            if($statusCode == 200) {
+
+                $f_data = json_decode($res->getBody(), true);
+                //
+                foreach ($f_data as $item){
+                    $item['day'] = $item['date']['year']. '/' . $item['date']['month'] . '/' . $item['date']['day'];
+                    $item['name'] = $item['name'][0]['text']; // pluck out the name only discard everything. and also take first name only
+                    Holiday::create($item);
+                }
+
+                $holidays = Holiday::where('day' , '>=' , $given_year.'/01/01')
+                    ->where('day', '<=' , $given_year. '/12/31')
+                    ->get();
+
+            }
+
+
+        }
+        return view('holidays',['holidays' =>$holidays]);
     }
 
     /**

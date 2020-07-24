@@ -3,20 +3,24 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <form class="col-md-8" method="post" action="{{route('holidays')}}">
+            @csrf
             <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
-
+                <div class="card-header">{{ __('South African Public Holidays') }}</div>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+                    <div class="input-group mb-3 input-group-lg">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">enter year, e.g 2020</span>
                         </div>
-                    @endif
+                        <input type="text" class="form-control" placeholder="year" id="year" name="year">
+                    </div>
 
-                    {{ __('You are logged in!') }}
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
+        </form>
+        </div>
         </div>
     </div>
 </div>
